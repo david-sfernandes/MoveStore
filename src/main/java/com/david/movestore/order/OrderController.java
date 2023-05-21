@@ -16,9 +16,7 @@ public class OrderController {
 
   @PostMapping
   public ResponseEntity<Order> save(@RequestBody OrderRequest request) {
-    var order = service.save(request);
-    System.out.println("Complete order: " + order);
-    return ResponseEntity.ok(order);
+    return service.save(request);
   }
 
   @GetMapping("/{id}")

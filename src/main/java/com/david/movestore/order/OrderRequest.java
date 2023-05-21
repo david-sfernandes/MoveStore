@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderRequest {
   private List<OrderProductDto> products;
-  private String userEmail;
   private Date orderDate;
 }
 
