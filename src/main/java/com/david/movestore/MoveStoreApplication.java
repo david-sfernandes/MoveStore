@@ -6,7 +6,6 @@ import com.cloudinary.utils.ObjectUtils;
 import com.david.movestore.auth.AuthenticationService;
 import com.david.movestore.auth.RegisterRequest;
 import com.david.movestore.order.OrderService;
-import com.david.movestore.product.ProductRequest;
 import com.david.movestore.product.ProductService;
 import com.david.movestore.user.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,7 @@ public class MoveStoreApplication {
 				"cloud_name", "dj4pzc33p",
 				"api_key", "459697167742439",
 				"api_secret", "h1Vbikvt57dEJ2P5AzzSxq9r_lo",
-				"secure", true)); 
+				"secure", true));
 		SingletonManager manager = new SingletonManager();
 		manager.setCloudinary(cloudinary);
 		manager.init();
@@ -32,9 +31,9 @@ public class MoveStoreApplication {
 	}
 
 	@Bean
-  public ObjectMapper objectMapper() {
-    return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-  }
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+	}
 
 	@Bean
 	public CommandLineRunner commandLineRunner(
@@ -68,25 +67,6 @@ public class MoveStoreApplication {
 					.role(Role.USER)
 					.build();
 			System.out.println("User token: " + service.register(user).getAccessToken());
-
-			var product = ProductRequest.builder()
-					.price(100.0)
-					.quantity(1)
-					.image("img.png")
-					.name("mesa")
-					.description("Description")
-					.build();
-			System.out.println("Product avaliable: " + productService.saveProduct(product).getId());
-
-			// List<OrderProduct> products = new ArrayList<>();
-			// products.add(OrderProduct.builder().productId(1).quantity(1).build());
-			//
-			// var order = OrderRequest.builder()
-			// .orderDate(new Date())
-			// .products(products)
-			// .userEmail("user@mail.com")
-			// .build();
-			// orderService.save(order);
 		};
 	}
 }

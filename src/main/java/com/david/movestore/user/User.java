@@ -2,6 +2,7 @@ package com.david.movestore.user;
 
 import com.david.movestore.token.Token;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,25 +23,22 @@ public class User implements UserDetails {
   @Id
   @GeneratedValue
   private Integer id;
+  @NotNull(message = "User firstname is required.")
   private String firstname;
+  @NotNull(message = "User lastname is required.")
   private String lastname;
+  @NotNull(message = "User email is required.")
   private String email;
+  @NotNull(message = "User password is required.")
   private String password;
-
   @Enumerated(EnumType.STRING)
   private Role role;
-
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return role.getAuthorities();
-  }
-
-  @Override
-  public String getPassword() {
-    return password;
   }
 
   @Override

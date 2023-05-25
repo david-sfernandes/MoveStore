@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.david.movestore.exceptions.NotNullFileException;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,7 +30,7 @@ public class DemoController {
   @PostMapping(value = "/upload", consumes = { "multipart/form-data" })
   public ResponseEntity<Photo> savePhoto(
       @ModelAttribute PhotoUpload photoUpload,
-      BindingResult result) throws IOException {
+      BindingResult result) throws IOException, NotNullFileException {
     return ResponseEntity.ok(service.uploadFile(photoUpload, result));
 
   }

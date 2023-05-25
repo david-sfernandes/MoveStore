@@ -10,14 +10,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @Entity
-@Table(name = "order_products")
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "order_products")
 public class OrderProduct {
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue
   private Integer id;
   private Integer productId;
   private Integer quantity;
+  private Double price;
+  private String name;
+  private String image;
 }

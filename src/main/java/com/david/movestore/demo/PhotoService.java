@@ -2,6 +2,8 @@ package com.david.movestore.demo;
 
 import com.cloudinary.Singleton;
 import com.cloudinary.utils.ObjectUtils;
+import com.david.movestore.exceptions.NotNullFileException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -11,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -21,21 +22,20 @@ public class PhotoService {
   @SuppressWarnings("rawtypes")
   public Photo uploadFile(
       PhotoUpload photoUpload,
-      BindingResult result) throws IOException {
+      BindingResult result) throws NotNullFileException, IOException {
     PhotoUploadValidator validator = new PhotoUploadValidator();
     validator.validate(photoUpload, result);
 
     Map uploadResult;
 
     if (photoUpload.getFile() == null && photoUpload.getFile().isEmpty()) {
-      return new Photo();
+      throw new NotNullFileException(Photo.class, "image");
     }
 
     System.out.println("Not null");
     uploadResult = Singleton.getCloudinary().uploader().upload(photoUpload.getFile().getBytes(),
         ObjectUtils.asMap("resource_type", "auto"));
 
-    System.out.println("- uploadRes: " + uploadResult);
     photoUpload.setPublicId(uploadResult.get("public_id").toString());
     Object version = uploadResult.get("version");
     photoUpload.setVersion(((Number) version).longValue());

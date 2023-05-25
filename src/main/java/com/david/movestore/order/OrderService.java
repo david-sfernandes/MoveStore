@@ -1,5 +1,6 @@
 package com.david.movestore.order;
 
+import com.david.movestore.exceptions.NotEnoughStockException;
 import com.david.movestore.exceptions.NotFoundException;
 import com.david.movestore.orderProduct.OrderProduct;
 import com.david.movestore.orderProduct.OrderProductDto;
@@ -19,38 +20,43 @@ public class OrderService {
   private final OrderRepository repository;
   private final ProductRepository productRepository;
 
-  public ResponseEntity<Order> save(OrderRequest request) {
+  public ResponseEntity<Order> save(OrderRequest request) throws NotEnoughStockException {
     String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
     List<OrderProduct> orderProducts = new ArrayList<>();
     for (OrderProductDto dto : request.getProducts()) {
       Product product = productRepository
-        .findById(dto.getProductId())
-        .orElseThrow(() -> new NotFoundException(Product.class, "id", dto.getProductId().toString()));
+          .findById(dto.getProductId())
+          .orElseThrow(() -> new NotFoundException(Product.class, "id", dto.getProductId().toString()));
 
-      if (product.getQuantity() < dto.getQuantity()) {
-        ResponseEntity.badRequest().body("Not enough items on stock.");
-      }
+      if (product.getQuantity() < dto.getQuantity())
+        throw new NotEnoughStockException(product.getId(), product.getQuantity());
+
+      product.setQuantity(product.getQuantity() - dto.getQuantity());
+      productRepository.save(product);
+      
       orderProducts.add(OrderProduct.builder()
-        .quantity(dto.getQuantity())
-        .productId(dto.getProductId())
-        .build());
+          .quantity(dto.getQuantity())
+          .productId(dto.getProductId())
+          .image(product.getImage())
+          .name(product.getName())
+          .build());
     }
 
     Order order = Order.builder()
-      .status(Status.CONFIRMED)
-      .orderDate(request.getOrderDate())
-      .orderProducts(orderProducts)
-      .userEmail(userEmail)
-      .build();
+        .status(Status.CONFIRMED)
+        .orderDate(request.getOrderDate())
+        .orderProducts(orderProducts)
+        .userEmail(userEmail)
+        .build();
     return ResponseEntity.ok(repository.save(order));
   }
 
   public String updateStatus(UpdateRequest request) {
     repository
-      .findById(request.orderId)
-      .orElseThrow()
-      .setStatus(request.status);
+        .findById(request.orderId)
+        .orElseThrow(() -> new NotFoundException(Order.class, "id", request.orderId.toString()))
+        .setStatus(request.status);
     return "Status is up to date.";
   }
 

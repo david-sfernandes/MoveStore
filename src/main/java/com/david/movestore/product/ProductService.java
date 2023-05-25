@@ -1,31 +1,65 @@
 package com.david.movestore.product;
 
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+
+import com.cloudinary.Singleton;
+import com.cloudinary.utils.ObjectUtils;
+import com.david.movestore.exceptions.NotNullFileException;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-  private final ProductRepository productRepository;
+  private final ProductRepository repository;
 
-  public Product saveProduct(ProductRequest request) {
-    var product = getProduct(request);
-    return productRepository.save(product);
+  public Product saveProduct(ProductRequest request, BindingResult result) throws NotNullFileException, IOException {
+    request = uploadFile(request, result);
+    Product product = Product.builder()
+        .name(request.getName())
+        .price(request.getPrice())
+        .image(request.getImgUrl())
+        .createAt(LocalDateTime.now())
+        .quantity(request.getQuantity())
+        .lastUpdate(LocalDateTime.now())
+        .description(request.getDescription())
+        .build();
+    return repository.save(product);
   }
 
-  public Product getProduct(ProductRequest request) {
-    return Product.builder()
-      .price(request.getPrice())
-      .description(request.getDescription())
-      .image(request.getImage())
-      .name(request.getName())
-      .quantity(request.getQuantity())
-      .build();
-  }
+  public Product updateProduct(ProductRequest request, BindingResult result) throws NotNullFileException, IOException {
+    Product product = Product.builder()
+        .name(request.getName())
+        .price(request.getPrice())
+        .quantity(request.getQuantity())
+        .lastUpdate(LocalDateTime.now())
+        .description(request.getDescription())
+        .build();
 
-  public Product updateProduct(ProductRequest request) {
-    var product = getProduct(request);
+    if (request.getFile() != null && !request.getFile().isEmpty()) {
+      request = uploadFile(request, result);
+      product.setImage(request.getImgUrl());
+    }
+
     product.setId(request.getId());
-    return productRepository.save(product);
+    return repository.save(product);
+  }
+
+  @SuppressWarnings("rawtypes")
+  public ProductRequest uploadFile(ProductRequest request, BindingResult result)
+      throws NotNullFileException, IOException {
+    FileValidator validator = new FileValidator();
+    validator.validate(request, result);
+
+    Map uploadResult = Singleton.getCloudinary().uploader().upload(request.getFile().getBytes(),
+        ObjectUtils.asMap("resource_type", "auto"));
+
+    request.setImgUrl(uploadResult.get("url").toString());
+    return request;
   }
 }

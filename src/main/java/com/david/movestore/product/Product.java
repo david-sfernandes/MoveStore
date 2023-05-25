@@ -1,9 +1,14 @@
 package com.david.movestore.product;
 
+import java.time.LocalDateTime;
+
+import com.cloudinary.StoredFile;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,21 +16,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Table(name="products")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "products")
 public class Product {
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue
   private Integer id;
   @NotNull(message = "Product name is required.")
   private String name;
   private String description;
-  @NotNull(message = "Product name is required.")
   private String image;
-  @NotNull(message = "Product name is required.")
+  @NotNull(message = "Product quantity is required.")
   private Integer quantity;
-  @NotNull(message = "Product name is required.")
+  @NotNull(message = "Product price is required.")
+  @Min(value = 0, message = "Price should not be negative.")
   private Double price;
+  private LocalDateTime createAt;
+  private LocalDateTime lastUpdate;
+
+  public StoredFile getUpload() {
+    StoredFile file = new StoredFile();
+    file.setPreloadedFile(image);
+    return file;
+  }
+
+  public void setUpload(StoredFile file) {
+    this.image = file.getPreloadedFile();
+  }
 }

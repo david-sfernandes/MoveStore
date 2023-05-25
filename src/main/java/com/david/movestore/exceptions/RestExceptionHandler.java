@@ -11,17 +11,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-  @ExceptionHandler(value = NotFoundException.class)
+
+  @ExceptionHandler(value = { NotFoundException.class, NotNullFileException.class })
   protected ResponseEntity<Object> handleEntityNotFound(
-    WebRequest request, EntityNotFoundException ex
-  ) {
-    System.out.println("Here");
+      WebRequest request, EntityNotFoundException ex) {
     return handleExceptionInternal(
-      ex,
-      ex.getMessage(),
-      new HttpHeaders(),
-      HttpStatus.BAD_REQUEST,
-      request
-    );
+        ex,
+        ex.getMessage(),
+        new HttpHeaders(),
+        HttpStatus.BAD_REQUEST,
+        request);
   }
 }
