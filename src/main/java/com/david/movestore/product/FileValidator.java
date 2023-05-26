@@ -10,7 +10,7 @@ public class FileValidator implements Validator {
   }
 
   public void validate(Object obj, Errors e) {
-    ValidationUtils.rejectIfEmpty(e, "title", "title.empty");
+    ValidationUtils.rejectIfEmpty(e, "name", "name.empty");
     ProductRequest p = (ProductRequest) obj;
     if (p.getFile() == null || p.getFile().isEmpty()) {
       if (!p.validSignature()) {

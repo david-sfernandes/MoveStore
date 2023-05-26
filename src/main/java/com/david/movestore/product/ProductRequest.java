@@ -18,14 +18,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ProductRequest extends StoredFile {
-  Integer id;
-  String name;
-  String description;
-  Integer quantity;
-  Double price;
-  MultipartFile file;
+  public Integer id;
+  public String name;
+  public String description;
+  public Integer quantity;
+  public Double price;
+  public MultipartFile file;
   @JsonIgnore
-  String imgUrl;
+  public String imgUrl;
 
   public String getUrl() {
     if (version != null && format != null && publicId != null) {

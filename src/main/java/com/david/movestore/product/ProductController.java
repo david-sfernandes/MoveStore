@@ -33,7 +33,7 @@ public class ProductController {
   // @Hidden
   @PostMapping(value = "/", consumes = { "multipart/form-data" })
   @PreAuthorize("hasAuthority('admin:create')")
-  public ResponseEntity<Product> addProduct(@RequestBody ProductRequest request, BindingResult result)
+  public ResponseEntity<Product> addProduct(@ModelAttribute ProductRequest request, BindingResult result)
       throws NotNullFileException, IOException {
     return ResponseEntity.ok(service.saveProduct(request, result));
   }
@@ -41,7 +41,7 @@ public class ProductController {
   // @Hidden
   @PutMapping(value = "/", consumes = { "multipart/form-data" })
   @PreAuthorize("hasAuthority('admin:update')")
-  public ResponseEntity<Product> updateProduct(@RequestBody ProductRequest request, BindingResult result)
+  public ResponseEntity<Product> updateProduct(@ModelAttribute ProductRequest request, BindingResult result)
       throws NotNullFileException, IOException {
     return ResponseEntity.ok(service.updateProduct(request, result));
   }

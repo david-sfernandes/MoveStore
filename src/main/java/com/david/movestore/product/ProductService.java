@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -24,9 +25,9 @@ public class ProductService {
         .name(request.getName())
         .price(request.getPrice())
         .image(request.getImgUrl())
-        .createAt(LocalDateTime.now())
+        .createAt(new Date(System.currentTimeMillis()))
         .quantity(request.getQuantity())
-        .lastUpdate(LocalDateTime.now())
+        .lastUpdate(new Date(System.currentTimeMillis()))
         .description(request.getDescription())
         .build();
     return repository.save(product);
@@ -37,7 +38,7 @@ public class ProductService {
         .name(request.getName())
         .price(request.getPrice())
         .quantity(request.getQuantity())
-        .lastUpdate(LocalDateTime.now())
+        .lastUpdate(new Date(System.currentTimeMillis()))
         .description(request.getDescription())
         .build();
 

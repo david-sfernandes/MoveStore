@@ -50,14 +50,14 @@ public class MoveStoreApplication {
 					.build();
 			System.out.println("Admin token: " + service.register(admin).getAccessToken());
 
-			var manager = RegisterRequest.builder()
-					.firstname("Manager")
-					.lastname("Manager")
-					.email("manager@mail.com")
-					.password("password")
-					.role(Role.MANAGER)
-					.build();
-			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+			// var manager = RegisterRequest.builder()
+			// 		.firstname("Manager")
+			// 		.lastname("Manager")
+			// 		.email("manager@mail.com")
+			// 		.password("password")
+			// 		.role(Role.MANAGER)
+			// 		.build();
+			// System.out.println("Manager token: " + service.register(manager).getAccessToken());
 
 			var user = RegisterRequest.builder()
 					.firstname("User")

@@ -1,6 +1,7 @@
 package com.david.movestore.product;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.cloudinary.StoredFile;
 
@@ -34,8 +35,8 @@ public class Product {
   @NotNull(message = "Product price is required.")
   @Min(value = 0, message = "Price should not be negative.")
   private Double price;
-  private LocalDateTime createAt;
-  private LocalDateTime lastUpdate;
+  private Date createAt;
+  private Date lastUpdate;
 
   public StoredFile getUpload() {
     StoredFile file = new StoredFile();
