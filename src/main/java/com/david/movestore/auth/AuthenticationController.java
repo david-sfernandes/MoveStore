@@ -17,20 +17,20 @@ import java.io.IOException;
 public class AuthenticationController {
   private final AuthenticationService service;
 
-  @PostMapping("/register")
+  @PostMapping("/signup")
   public ResponseEntity<AuthenticationResponse> register(
       @RequestBody RegisterRequest request
   ) {
     return ResponseEntity.ok(service.register(request));
   }
-  @PostMapping("/authenticate")
+  @PostMapping("/signin")
   public ResponseEntity<AuthenticationResponse> authenticate(
       @RequestBody AuthenticationRequest request
   ) {
     return ResponseEntity.ok(service.authenticate(request));
   }
 
-  @PostMapping("/refresh-token")
+  @PostMapping("/refresh")
   public void refreshToken(
       HttpServletRequest request,
       HttpServletResponse response

@@ -20,6 +20,7 @@ public class ProductService {
   private final ProductRepository repository;
 
   public Product saveProduct(ProductRequest request, BindingResult result) throws NotNullFileException, IOException {
+    System.out.println("=> New post request");
     request = uploadFile(request, result);
     Product product = Product.builder()
         .name(request.getName())
@@ -30,6 +31,7 @@ public class ProductService {
         .lastUpdate(new Date(System.currentTimeMillis()))
         .description(request.getDescription())
         .build();
+    System.out.println("=> New product created with name: " + product.getName());
     return repository.save(product);
   }
 
@@ -59,7 +61,7 @@ public class ProductService {
 
     Map uploadResult = Singleton.getCloudinary().uploader().upload(request.getFile().getBytes(),
         ObjectUtils.asMap("resource_type", "auto"));
-
+    System.out.println(" => Upload file into " + uploadResult.get("url").toString());
     request.setImgUrl(uploadResult.get("url").toString());
     return request;
   }
