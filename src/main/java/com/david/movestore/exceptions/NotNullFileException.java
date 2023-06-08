@@ -1,5 +1,6 @@
 package com.david.movestore.exceptions;
 
+@SuppressWarnings("rawtypes")
 public class NotNullFileException extends Exception {
   public NotNullFileException(Class c, String param) {
     super(NotNullFileException.generateMessage(c.getSimpleName(), param));

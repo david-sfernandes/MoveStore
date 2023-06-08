@@ -3,6 +3,8 @@ package com.david.movestore;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.SingletonManager;
 import com.cloudinary.utils.ObjectUtils;
+import com.david.movestore.auth.AuthenticationRequest;
+import com.david.movestore.auth.AuthenticationResponse;
 import com.david.movestore.auth.AuthenticationService;
 import com.david.movestore.auth.RegisterRequest;
 import com.david.movestore.order.OrderService;
@@ -49,36 +51,16 @@ public class MoveStoreApplication {
 
 	@Bean
 	public CommandLineRunner commandLineRunner(
-			AuthenticationService service,
-			ProductService productService,
-			OrderService orderService) {
+			AuthenticationService service) {
 		return args -> {
-			var admin = RegisterRequest.builder()
-					.firstname("Admin")
-					.lastname("Admin")
-					.email("admin@mail.com")
-					.password("password")
-					.role(Role.ADMIN)
-					.build();
-			System.out.println("Admin token: " + service.register(admin).getAccessToken());
+			var adminReq = AuthenticationRequest.builder().email("admin@mail.com").password("password").build();
+			var userReq = AuthenticationRequest.builder().email("user@mail.com").password("password").build();
+			AuthenticationResponse userTokens = service.authenticate(userReq);
+			AuthenticationResponse adminTokens = service.authenticate(adminReq);
 
-			// var manager = RegisterRequest.builder()
-			// 		.firstname("Manager")
-			// 		.lastname("Manager")
-			// 		.email("manager@mail.com")
-			// 		.password("password")
-			// 		.role(Role.MANAGER)
-			// 		.build();
-			// System.out.println("Manager token: " + service.register(manager).getAccessToken());
-
-			var user = RegisterRequest.builder()
-					.firstname("User")
-					.lastname("User")
-					.email("user@mail.com")
-					.password("password")
-					.role(Role.USER)
-					.build();
-			System.out.println("User token: " + service.register(user).getAccessToken());
+			System.out.println("\n=============");
+			System.out.println("User token: " + userTokens.getAccessToken());
+			System.out.println("Admin token: " + adminTokens.getAccessToken());
 		};
 	}
 }

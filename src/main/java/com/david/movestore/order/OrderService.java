@@ -67,4 +67,8 @@ public class OrderService {
   public List<Order> getById(Integer id) {
     return null;
   }
+
+  public List<Order> getByEmail(String userEmail) {
+    return repository.findByUserEmail(userEmail);
+  }
 }
