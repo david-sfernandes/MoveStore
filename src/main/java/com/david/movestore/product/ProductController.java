@@ -1,16 +1,23 @@
 package com.david.movestore.product;
 
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.david.movestore.exceptions.NotFoundException;
 import com.david.movestore.exceptions.NotNullFileException;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +32,11 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Optional<Product>> getById(
-      @PathVariable Integer id) {
-    return ResponseEntity.ok(repository.findById(id));
+  public ResponseEntity<Product> getById(@PathVariable Integer id) {
+    return ResponseEntity.ok(repository
+      .findById(id)
+      .orElseThrow(() -> new NotFoundException(Product.class, "id", id.toString()))
+    );
   }
 
   // @Hidden

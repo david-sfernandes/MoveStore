@@ -1,24 +1,20 @@
 package com.david.movestore;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.SingletonManager;
-import com.cloudinary.utils.ObjectUtils;
-import com.david.movestore.auth.AuthenticationRequest;
-import com.david.movestore.auth.AuthenticationResponse;
-import com.david.movestore.auth.AuthenticationService;
-import com.david.movestore.auth.RegisterRequest;
-import com.david.movestore.order.OrderService;
-import com.david.movestore.product.ProductService;
-import com.david.movestore.user.Role;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.SingletonManager;
+import com.cloudinary.utils.ObjectUtils;
+import com.david.movestore.auth.AuthenticationRequest;
+import com.david.movestore.auth.AuthenticationResponse;
+import com.david.movestore.auth.AuthenticationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @SpringBootApplication
 public class MoveStoreApplication {

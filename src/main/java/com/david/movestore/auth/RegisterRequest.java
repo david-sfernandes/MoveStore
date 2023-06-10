@@ -1,6 +1,7 @@
 package com.david.movestore.auth;
 
 import com.david.movestore.user.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
