@@ -2,6 +2,7 @@ package com.david.movestore.auth;
 
 import com.david.movestore.config.JwtService;
 import com.david.movestore.exceptions.NotFoundException;
+import com.david.movestore.exceptions.UserExistsException;
 import com.david.movestore.token.Token;
 import com.david.movestore.token.TokenRepository;
 import com.david.movestore.token.TokenType;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,10 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  public AuthenticationResponse register(RegisterRequest request) {
+  public AuthenticationResponse register(RegisterRequest request) throws UserExistsException {
+    Optional<User> checkUser = repository.findByEmail(request.getEmail());
+    if (checkUser.isPresent()) throw new UserExistsException(request.getEmail());
+    
     var user = User.builder()
         .firstname(request.getFirstname())
         .lastname(request.getLastname())
@@ -37,7 +42,6 @@ public class AuthenticationService {
         .role(request.getRole())
         .build();
     var savedUser = repository.save(user);
-    System.out.println("New user -> id: " + savedUser.getId() + " email: " + savedUser.getEmail());
 
     var jwtToken = jwtService.generateToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
@@ -89,30 +93,28 @@ public class AuthenticationService {
     tokenRepository.saveAll(validUserTokens);
   }
 
-  public void refreshToken(
-      HttpServletRequest request,
-      HttpServletResponse response) throws IOException {
+  public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
     final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
     final String refreshToken;
     final String userEmail;
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      return;
-    }
+    if (authHeader == null || !authHeader.startsWith("Bearer "))
+      throw new NotFoundException(User.class, "authHeader", "null");
     refreshToken = authHeader.substring(7);
     userEmail = jwtService.extractUsername(refreshToken);
     if (userEmail != null) {
       var user = this.repository.findByEmail(userEmail)
-          .orElseThrow();
+          .orElseThrow(() -> new NotFoundException(User.class, "email", userEmail));
       if (jwtService.isTokenValid(refreshToken, user)) {
         var accessToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, accessToken);
-        var authResponse = AuthenticationResponse.builder()
+        return AuthenticationResponse.builder()
+            .role(user.getRole())
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
-        new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
       }
     }
+    return null;
   }
 }

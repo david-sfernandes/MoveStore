@@ -2,6 +2,7 @@ package com.david.movestore.order;
 
 import java.util.List;
 
+import org.cloudinary.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +43,7 @@ public class OrderController {
   // @Hidden
   @PutMapping
   @PreAuthorize("hasAuthority('admin:update')")
-  public ResponseEntity<String> updateStatus(@RequestBody UpdateRequest request) {
+  public ResponseEntity<JSONObject> updateStatus(@RequestBody UpdateRequest request) {
     return ResponseEntity.ok(service.updateStatus(request));
   }
 

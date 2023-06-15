@@ -1,18 +1,21 @@
 package com.david.movestore.order;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cloudinary.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.david.movestore.exceptions.NotEnoughStockException;
 import com.david.movestore.exceptions.NotFoundException;
 import com.david.movestore.orderProduct.OrderProduct;
 import com.david.movestore.orderProduct.OrderProductDto;
 import com.david.movestore.product.Product;
 import com.david.movestore.product.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +37,11 @@ public class OrderService {
 
       product.setQuantity(product.getQuantity() - dto.getQuantity());
       productRepository.save(product);
-      
+
       orderProducts.add(OrderProduct.builder()
-          .quantity(dto.getQuantity())
           .productId(dto.getProductId())
+          .quantity(dto.getQuantity())
+          .price(product.getPrice())
           .image(product.getImage())
           .name(product.getName())
           .build());
@@ -52,12 +56,12 @@ public class OrderService {
     return ResponseEntity.ok(repository.save(order));
   }
 
-  public String updateStatus(UpdateRequest request) {
+  public JSONObject updateStatus(UpdateRequest request) {
     repository
         .findById(request.orderId)
         .orElseThrow(() -> new NotFoundException(Order.class, "id", request.orderId.toString()))
         .setStatus(request.status);
-    return "Status is up to date.";
+    return new JSONObject().put("message", "Status is up to date.");
   }
 
   public List<Order> getAll() {
