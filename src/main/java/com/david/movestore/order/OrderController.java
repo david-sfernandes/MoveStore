@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.david.movestore.SimpleResponse.SimpleResponse;
 import com.david.movestore.exceptions.NotEnoughStockException;
 import com.david.movestore.exceptions.NotFoundException;
 import com.david.movestore.user.Role;
@@ -43,7 +44,7 @@ public class OrderController {
   // @Hidden
   @PutMapping
   @PreAuthorize("hasAuthority('admin:update')")
-  public ResponseEntity<JSONObject> updateStatus(@RequestBody UpdateRequest request) {
+  public ResponseEntity<SimpleResponse> updateStatus(@RequestBody UpdateRequest request) {
     return ResponseEntity.ok(service.updateStatus(request));
   }
 
