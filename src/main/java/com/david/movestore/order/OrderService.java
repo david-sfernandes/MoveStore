@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.david.movestore.SimpleResponse.SimpleResponse;
 import com.david.movestore.exceptions.NotEnoughStockException;
 import com.david.movestore.exceptions.NotFoundException;
 import com.david.movestore.orderProduct.OrderProduct;
@@ -56,12 +57,13 @@ public class OrderService {
     return ResponseEntity.ok(repository.save(order));
   }
 
-  public JSONObject updateStatus(UpdateRequest request) {
-    repository
+  public SimpleResponse updateStatus(UpdateRequest request) {
+    Order order = repository
         .findById(request.orderId)
-        .orElseThrow(() -> new NotFoundException(Order.class, "id", request.orderId.toString()))
-        .setStatus(request.status);
-    return new JSONObject().put("message", "Status is up to date.");
+        .orElseThrow(() -> new NotFoundException(Order.class, "id", request.orderId.toString()));
+    order.setStatus(request.status);
+    repository.save(order);
+    return SimpleResponse.builder().message("Status is up to date.").build();
   }
 
   public List<Order> getAll() {

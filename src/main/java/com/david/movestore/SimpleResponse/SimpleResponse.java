@@ -1,4 +1,5 @@
-package com.david.movestore.exceptions;
+package com.david.movestore.SimpleResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExceptionMessage {
+public class SimpleResponse {
   String message;
 }

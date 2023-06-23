@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://lallah.db.elephantsql.com/svubttgr
-    username: svubttgr
-    password: EzddxO6EK9RHnqj22Y-nxPS8jo2mjlXA
+    url: jdbc:postgresql://drona.db.elephantsql.com/nvowemhf
+    username: nvowemhf
+    password: peAwykkPTS3EA5HQycE-Bujn-oUXvwO9
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
